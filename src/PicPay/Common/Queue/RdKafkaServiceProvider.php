@@ -21,7 +21,6 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Listener::class, Listener::class);
         $this->mergeConfigFrom(
             __DIR__.'/../config/rdkafka.php',
             'queue.connections.rdkafka'

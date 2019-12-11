@@ -4,8 +4,14 @@
 namespace PicPay\PicPay\Common\Queue\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Queue\Listener;
-use Illuminate\Queue\ListenerOptions;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Queue\Job;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Worker;
+use Illuminate\Queue\WorkerOptions;
+use Illuminate\Support\Carbon;
 
 /**
  * Class ListenTopicCommand
@@ -30,78 +36,108 @@ class ListenTopicCommand extends Command
      * @var string
      */
     protected $description = 'Listen to a given topic';
+
     /**
-     * The queue listener instance.
+     * The queue worker instance.
      *
-     * @var \Illuminate\Queue\Listener
+     * @var \Illuminate\Queue\Worker
      */
-    protected $listener;
+    protected $worker;
+
+    /**
+     * The cache store implementation.
+     *
+     * @var \Illuminate\Contracts\Cache\Repository
+     */
+    protected $cache;
 
     private static $connection = 'rdkafka';
 
     /**
-     * Create a new queue listen command.
+     * Create a new queue work command.
      *
-     * @param  \Illuminate\Queue\Listener  $listener
+     * @param  \Illuminate\Queue\Worker  $worker
+     * @param  \Illuminate\Contracts\Cache\Repository  $cache
      * @return void
      */
-    public function __construct(Listener $listener)
+    public function __construct(Worker $worker, Cache $cache)
     {
         parent::__construct();
-        $this->setOutputHandler($this->listener = $listener);
+        $this->cache = $cache;
+        $this->worker = $worker;
     }
+
     /**
-     * Execute the console command.
      *
-     * @return void
      */
     public function handle()
     {
-        $this->listener->listen(
-            self::$connection, $this->getQueue(), $this->gatherOptions()
-        );
-    }
-    /**
-     * Get the name of the queue connection to listen on.
-     *
-     * @return string
-     */
-    protected function getQueue()
-    {
-        //topic
-        //group.id
-        //metadata.broker.list
-        //enable.auto.commit
-        //auto.offset.reset
 
-        return $this->input->getOption('topic') ?: $this->laravel['config']->get(
-            sprintf("queue.connections.%s.topic", self::$connection), 'default'
-        );
     }
-    /**
-     * Get the listener options for the command.
-     *
-     * @return \Illuminate\Queue\ListenerOptions
-     */
-    protected function gatherOptions()
-    {
-        return new ListenerOptions(
-            $this->option('env'), $this->option('delay'),
-            $this->option('memory'), $this->option('timeout'),
-            $this->option('sleep'), $this->option('tries'),
-            $this->option('force')
-        );
-    }
-    /**
-     * Set the options on the queue listener.
-     *
-     * @param  \Illuminate\Queue\Listener  $listener
-     * @return void
-     */
-    protected function setOutputHandler(Listener $listener)
-    {
-        $listener->setOutputHandler(function ($type, $line) {
-            $this->output->write($line);
-        });
-    }
+
+//    /**
+//     * Create a new queue listen command.
+//     *
+//     * @param  \Illuminate\Queue\Listener  $listener
+//     * @return void
+//     */
+//    public function __construct(Listener $listener)
+//    {
+//        parent::__construct();
+//        $this->setOutputHandler($this->listener = $listener);
+//    }
+//    /**
+//     * Execute the console command.
+//     *
+//     * @return void
+//     */
+//    public function handle()
+//    {
+//        $this->listener->listen(
+//            self::$connection, $this->getQueue(), $this->gatherOptions()
+//        );
+//    }
+//    /**
+//     * Get the name of the queue connection to listen on.
+//     *
+//     * @return string
+//     */
+//    protected function getQueue()
+//    {
+//        //topic
+//        //group.id
+//        //metadata.broker.list
+//        //enable.auto.commit
+//        //auto.offset.reset
+//
+//        return $this->input->getOption('topic') ?: $this->laravel['config']->get(
+//            sprintf("queue.connections.%s.topic", self::$connection), 'default'
+//        );
+//    }
+//    /**
+//     * Get the listener options for the command.
+//     *
+//     * @return \Illuminate\Queue\ListenerOptions
+//     */
+//    protected function gatherOptions()
+//    {
+//        return new ListenerOptions(
+//            $this->option('env'), $this->option('delay'),
+//            $this->option('memory'), $this->option('timeout'),
+//            $this->option('sleep'), $this->option('tries'),
+//            $this->option('force')
+//        );
+//    }
+//    /**
+//     * Set the options on the queue listener.
+//     *
+//     * @param  \Illuminate\Queue\Listener  $listener
+//     * @return void
+//     */
+//    protected function setOutputHandler(Listener $listener)
+//    {
+//        $listener->setOutputHandler(function ($type, $line) {
+//            $this->output->write($line);
+//        });
+//    }
 }
