@@ -2,37 +2,47 @@
 
 namespace PicPay\PicPay\Common\Queue;
 
-use Illuminate\Queue\QueueServiceProvider as DefaultQueueServiceProvider;
+use Illuminate\Queue\QueueManager;
+use Illuminate\Support\ServiceProvider;
 use PicPay\PicPay\Common\Queue\Connectors\RdKafkaConnector;
 
 /**
  * Class QueueServiceProvider
  * @package PicPay\PicPay\Common\Queue
  */
-class QueueServiceProvider extends DefaultQueueServiceProvider
+class RdKafkaServiceProvider extends ServiceProvider
 {
+
     /**
-     * Register the connectors on the queue manager.
+     * Register the service provider.
      *
-     * @param \Illuminate\Queue\QueueManager $manager
+     * @return void
      */
-    public function registerConnectors($manager)
+    public function register(): void
     {
-        foreach (['Null', 'Sync', 'Database', 'Redis', 'Beanstalkd', 'Sqs', 'RdKafka'] as $connector) {
-            $this->{"register{$connector}Connector"}($manager);
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/rdkafka.php',
+            'queue.connections.rdkafka'
+        );
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\ListenTopicCommand::class
+            ]);
         }
     }
 
     /**
-     * Register the Amazon RdKafka topic connector.
+     * Register the application's event listeners.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
      * @return void
      */
-    protected function registerRdKafkaConnector($manager)
+    public function boot(): void
     {
-        $manager->addConnector('rdkafka', function () {
-            return new RdKafkaConnector();
+        /** @var QueueManager $queue */
+        $queue = $this->app['queue'];
+        $queue->addConnector('rdkafka', function () {
+            return new RdKafkaConnector($this->app['config']['queue']['connections']['rdkafka']);
         });
     }
+
 }
