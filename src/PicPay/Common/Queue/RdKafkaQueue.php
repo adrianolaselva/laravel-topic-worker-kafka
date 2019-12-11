@@ -164,8 +164,8 @@ class RdKafkaQueue extends Queue implements QueueContract
      */
     public function close(): void
     {
-        $this->getContext()
-            ->close();
+//        $this->getContext()
+//            ->close();
     }
 
     /**
