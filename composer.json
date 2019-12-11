@@ -1,0 +1,29 @@
+{
+    "name": "adrianolaselva/laravel-topic-worker-kafka",
+    "license": "MIT",
+    "homepage": "https://adrianolaselva.com",
+    "support": {
+        "issues": "https://github.com/adrianolaselva/laravel-topic-worker-kafka/issues",
+        "source": "https://github.com/adrianolaselva/laravel-topic-worker-kafka"
+    },
+    "authors": [
+        {
+            "name": "Adriano M. La Selva",
+            "email": "adriano.selva@picpay.com"
+        }
+    ],
+    "require": {
+        "illuminate/queue": "^6.7",
+        "enqueue/rdkafka": "^0.9.15",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PicPay\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
