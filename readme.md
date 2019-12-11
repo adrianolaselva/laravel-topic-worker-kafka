@@ -1,6 +1,12 @@
 
 # Implementação de listener para apache kafka utilizando o estrutura de jobs do laravel
 
+### Instalação
+
+```sh
+composer require adrianolaselva/laravel-topic-worker-kafka
+```
+
 ### Adicionar ao arquivo `./config/queue.php` aa seguinte configuração
 
 ```php
@@ -33,10 +39,21 @@ KAFKA_EVENT_TRACKING_TOPIC=event-tracking-topic
 
 ### Configurações no laravel
 
+Registrar service provider no arquivo `config/app.php`
 
+```php
+[
+    'providers' => [
+        PicPay\Common\Queue\RdKafkaServiceProvider::class
+    ]
+]
+```
 
 ### Configurações no lumen
 
+Registrar service provider no arquivo `bootstrap/app.php`
 
-### Criação de worker
+```php
+$app->register(PicPay\Common\Queue\RdKafkaServiceProvider::class);
+```
 

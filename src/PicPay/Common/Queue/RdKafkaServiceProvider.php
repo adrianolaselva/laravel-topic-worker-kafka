@@ -2,8 +2,6 @@
 
 namespace PicPay\Common\Queue;
 
-use Illuminate\Queue\Console\WorkCommand;
-use Illuminate\Queue\Listener;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 use PicPay\Common\Queue\Connectors\RdKafkaConnector;
