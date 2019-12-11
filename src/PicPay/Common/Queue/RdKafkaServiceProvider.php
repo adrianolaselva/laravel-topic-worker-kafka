@@ -2,6 +2,7 @@
 
 namespace PicPay\PicPay\Common\Queue;
 
+use Illuminate\Queue\Listener;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 use PicPay\PicPay\Common\Queue\Connectors\RdKafkaConnector;
@@ -20,6 +21,7 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(Listener::class, Listener::class);
         $this->mergeConfigFrom(
             __DIR__.'/../config/rdkafka.php',
             'queue.connections.rdkafka'
