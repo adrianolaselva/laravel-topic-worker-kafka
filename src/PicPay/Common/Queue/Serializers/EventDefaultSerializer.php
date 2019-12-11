@@ -1,13 +1,13 @@
 <?php
 
-namespace PicPay\PicPay\Common\Queue\Serializers;
+namespace PicPay\Common\Queue\Serializers;
 
 use Enqueue\RdKafka\RdKafkaMessage;
 use Enqueue\RdKafka\Serializer;
 
 /**
  * Class EventDefaultSerializer
- * @package PicPay\PicPay\Common\Queue\Serializers
+ * @package PicPay\Common\Queue\Serializers
  */
 class EventDefaultSerializer implements Serializer
 {

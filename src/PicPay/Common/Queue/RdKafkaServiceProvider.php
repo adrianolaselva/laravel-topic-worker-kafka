@@ -1,15 +1,16 @@
 <?php
 
-namespace PicPay\PicPay\Common\Queue;
+namespace PicPay\Common\Queue;
 
+use Illuminate\Queue\Console\WorkCommand;
 use Illuminate\Queue\Listener;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
-use PicPay\PicPay\Common\Queue\Connectors\RdKafkaConnector;
+use PicPay\Common\Queue\Connectors\RdKafkaConnector;
 
 /**
  * Class QueueServiceProvider
- * @package PicPay\PicPay\Common\Queue
+ * @package PicPay\Common\Queue
  */
 class RdKafkaServiceProvider extends ServiceProvider
 {
@@ -22,7 +23,7 @@ class RdKafkaServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/rdkafka.php',
+            __DIR__.'/../../../../config/rdkafka.php',
             'queue.connections.rdkafka'
         );
         if ($this->app->runningInConsole()) {
@@ -42,7 +43,9 @@ class RdKafkaServiceProvider extends ServiceProvider
         /** @var QueueManager $queue */
         $queue = $this->app['queue'];
         $queue->addConnector('rdkafka', function () {
-            return new RdKafkaConnector($this->app['config']['queue']['connections']['rdkafka']);
+            return new RdKafkaConnector(
+                $this->app['events']
+            );
         });
     }
 

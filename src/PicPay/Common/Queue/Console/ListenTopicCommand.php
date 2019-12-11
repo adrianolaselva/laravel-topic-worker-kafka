@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PicPay\PicPay\Common\Queue\Console;
+namespace PicPay\Common\Queue\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Cache\Repository as Cache;
@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * Class ListenTopicCommand
- * @package PicPay\PicPay\Common\Queue\Console
+ * @package PicPay\Common\Queue\Console
  */
 class ListenTopicCommand extends Command
 {
@@ -37,34 +37,16 @@ class ListenTopicCommand extends Command
      */
     protected $description = 'Listen to a given topic';
 
-    /**
-     * The queue worker instance.
-     *
-     * @var \Illuminate\Queue\Worker
-     */
-    protected $worker;
-
-    /**
-     * The cache store implementation.
-     *
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    protected $cache;
-
     private static $connection = 'rdkafka';
 
     /**
      * Create a new queue work command.
      *
-     * @param  \Illuminate\Queue\Worker  $worker
-     * @param  \Illuminate\Contracts\Cache\Repository  $cache
      * @return void
      */
-    public function __construct(Worker $worker, Cache $cache)
+    public function __construct()
     {
         parent::__construct();
-        $this->cache = $cache;
-        $this->worker = $worker;
     }
 
     /**
@@ -72,7 +54,6 @@ class ListenTopicCommand extends Command
      */
     public function handle()
     {
-
     }
 
 //    /**

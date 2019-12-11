@@ -1,20 +1,21 @@
 <?php
 
 
-namespace PicPay\PicPay\Common\Queue;
+namespace PicPay\Common\Queue;
 
 use Enqueue\RdKafka\RdKafkaConnectionFactory;
 use Enqueue\RdKafka\Serializer;
 use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Queue\Queue;
+use Illuminate\Support\Arr;
 use Interop\Queue\Consumer;
 use Interop\Queue\Context;
-use PicPay\PicPay\Common\Queue\Jobs\RdKafkaJob;
-use PicPay\PicPay\Common\Queue\Serializers\EventDefaultSerializer;
+use PicPay\Common\Queue\Jobs\RdKafkaJob;
+use PicPay\Common\Queue\Serializers\EventDefaultSerializer;
 
 /**
  * Class RdKafkaQueue
- * @package PicPay\PicPay\Common\Queue
+ * @package PicPay\Common\Queue
  */
 class RdKafkaQueue extends Queue implements QueueContract
 {
@@ -25,11 +26,11 @@ class RdKafkaQueue extends Queue implements QueueContract
     protected $connectionFactory;
 
     /**
-     * The name of the default groupId.
+     * The name of the default config.
      *
-     * @var string
+     * @var array
      */
-    protected $groupId;
+    protected $config;
 
     /**
      * @var Serializer
@@ -39,16 +40,16 @@ class RdKafkaQueue extends Queue implements QueueContract
     /**
      * RdKafkaQueue constructor.
      * @param RdKafkaConnectionFactory $connectionFactory
-     * @param string $groupId
+     * @param array $config
      * @param Serializer|null $serializer
      */
     public function __construct(
         RdKafkaConnectionFactory $connectionFactory,
-        string $groupId = 'default',
+        array $config = [],
         Serializer $serializer = null)
     {
         $this->connectionFactory = $connectionFactory;
-        $this->groupId = $groupId;
+        $this->config = $config;
         $this->serializer = $serializer;
     }
 
@@ -60,7 +61,7 @@ class RdKafkaQueue extends Queue implements QueueContract
      */
     public function size($queue = null)
     {
-        // TODO: Implement size() method.
+        $queue = $this->getQueue($queue);
     }
 
     /**
@@ -89,21 +90,24 @@ class RdKafkaQueue extends Queue implements QueueContract
         $context = $this->getContext();
 
         $context->createProducer()
-            ->send($context->createQueue($queue), $context->createMessage($payload));
+            ->send($context->createQueue($this->getQueue($queue)), $context->createMessage($payload));
     }
 
     /**
      * Push a new job onto the queue after a delay.
      *
-     * @param \DateTimeInterface|\DateInterval|int $delay
-     * @param string|object $job
-     * @param mixed $data
-     * @param string|null $queue
-     * @return mixed
+     * @param \DateInterval|\DateTimeInterface|int $delay
+     * @param object|string $job
+     * @param string $data
+     * @param null $queue
+     * @return mixed|void
+     * @throws \Interop\Queue\Exception
+     * @throws \Interop\Queue\Exception\InvalidDestinationException
+     * @throws \Interop\Queue\Exception\InvalidMessageException
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
-        // TODO: Implement later() method.
+        $this->pushRaw($this->createPayload($job, $this->getQueue($queue), $data), $queue);
     }
 
     /**
@@ -114,6 +118,8 @@ class RdKafkaQueue extends Queue implements QueueContract
      */
     public function pop($queue = null)
     {
+        $queue = $this->getQueue($queue);
+
         $consumer = $this->getConsumer($queue);
 
         if($message = $consumer->receive()) {
@@ -151,5 +157,23 @@ class RdKafkaQueue extends Queue implements QueueContract
     {
         return $this->connectionFactory
             ->createContext();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function close(): void
+    {
+        $this->getContext()
+            ->close();
+    }
+
+    /**
+     * @param $queue
+     * @return string
+     */
+    private function getQueue($queue): string
+    {
+        return $queue ?? Arr::get($this->config, 'queue');
     }
 }

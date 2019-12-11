@@ -1,26 +1,46 @@
 <?php
 
-namespace PicPay\PicPay\Common\Queue\Connectors;
+namespace PicPay\Common\Queue\Connectors;
 
 
 use Enqueue\RdKafka\RdKafkaConnectionFactory;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\Connectors\ConnectorInterface;
-use PicPay\PicPay\Common\Queue\RdKafkaQueue;
+use Illuminate\Queue\Events\WorkerStopping;
+use Illuminate\Queue\Queue;
+use PicPay\Common\Queue\RdKafkaQueue;
+use Illuminate\Support\Arr;
 
 /**
  * Class RdKafkaConnector
- * @package PicPay\PicPay\Common\Queue\Connectors
+ * @package PicPay\Common\Queue\Connectors
  */
 class RdKafkaConnector implements ConnectorInterface
 {
+    /**
+     * @var Dispatcher
+     */
+    private $dispatcher;
+
+
+    public function __construct(Dispatcher $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
     /**
      * @param array $config
      * @return \Illuminate\Contracts\Queue\Queue
      */
-    public function connect(array $config)
+    public function connect(array $config): Queue
     {
-        return new RdKafkaQueue($this->getConnectionFactory($config));
+        $queue = new RdKafkaQueue($this->getConnectionFactory($config), $config);
+
+        $this->dispatcher->listen(WorkerStopping::class, static function () use ($queue): void {
+            $queue->close();
+        });
+
+        return $queue;
     }
 
     /**
@@ -29,15 +49,6 @@ class RdKafkaConnector implements ConnectorInterface
      */
     private function getConnectionFactory(array $config): RdKafkaConnectionFactory
     {
-        return new RdKafkaConnectionFactory([
-            'global' => [
-                'group.id' => $config['group.id'] ?? 'default',
-                'metadata.broker.list' => $config['metadata.broker.list'] ?? 'localhost:9092',
-                'enable.auto.commit' => $config['enable.auto.commit'] ?? 'false',
-            ],
-            'topic' => [
-                'auto.offset.reset' => $config['auto.offset.reset'] ?? 'earliest',
-            ],
-        ]);
+        return new RdKafkaConnectionFactory(Arr::get($config, 'parameters'));
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         verbose="true"
+>
+    <testsuites>
+        <testsuite name="Integração apache kafka">
+            <directory suffix="Test.php">./tests/</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="KAFKA_METADATA_BROKER_LIST" value="localhost:9092"/>
+        <env name="KAFKA_ENABLE_AUTO_COMMIT" value="false"/>
+        <env name="KAFKA_AUTO_OFFSET_RESET" value="earliest"/>
+        <env name="KAFKA_DEFAULT_TOPIC" value="event-tracking"/>
+    </php>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="build/coverage" />
+    </logging>
+</phpunit>

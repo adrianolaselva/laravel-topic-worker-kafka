@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PicPay\PicPay\Common\Queue\Jobs;
+namespace PicPay\Common\Queue\Jobs;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\Job as JobContract;
@@ -11,7 +11,7 @@ use Interop\Queue\Message;
 
 /**
  * Class RdKafkaJob
- * @package PicPay\PicPay\Common\Queue\Jobs
+ * @package PicPay\Common\Queue\Jobs
  */
 class RdKafkaJob extends Job implements JobContract
 {

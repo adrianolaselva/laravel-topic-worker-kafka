@@ -38,11 +38,5 @@ KAFKA_EVENT_TRACKING_TOPIC=event-tracking-topic
 ### Configurações no lumen
 
 
-
-### adicionar command em `./app/Console/Kernel.php`
-
-\PicPay\PicPay\Common\Queue\Console\ListenTopicCommand::class
-
 ### Criação de worker
 
-php artisan make:command Listeners\\TopicEventTrackingListener --command=topic:event-tracking-listen
