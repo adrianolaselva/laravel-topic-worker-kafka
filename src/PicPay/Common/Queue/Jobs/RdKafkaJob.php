@@ -51,6 +51,7 @@ class RdKafkaJob extends Job implements JobContract
      */
     public function delete()
     {
+        parent::delete();
         $this->consumer->acknowledge($this->message);
     }
 

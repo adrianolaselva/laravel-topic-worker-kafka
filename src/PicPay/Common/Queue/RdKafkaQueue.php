@@ -59,9 +59,10 @@ class RdKafkaQueue extends Queue implements QueueContract
      * @param string|null $queue
      * @return int
      */
-    public function size($queue = null)
+    public function size($queue = null): int
     {
-        $queue = $this->getQueue($queue);
+//        $queue = $this->getQueue($queue);
+//        return 1;
     }
 
     /**
@@ -122,7 +123,9 @@ class RdKafkaQueue extends Queue implements QueueContract
 
         $consumer = $this->getConsumer($queue);
 
-        if($message = $consumer->receive()) {
+        $message = $consumer->receive();
+
+        if(!empty($message)) {
             return new RdKafkaJob(
                 $this->container,
                 $consumer,
@@ -130,6 +133,8 @@ class RdKafkaQueue extends Queue implements QueueContract
                 $message
             );
         }
+
+        return null;
     }
 
     /**
@@ -164,8 +169,8 @@ class RdKafkaQueue extends Queue implements QueueContract
      */
     public function close(): void
     {
-//        $this->getContext()
-//            ->close();
+        $this->getContext()
+            ->close();
     }
 
     /**

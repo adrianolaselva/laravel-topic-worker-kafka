@@ -8,7 +8,7 @@ use Illuminate\Queue\QueueManager;
 use PicPay\Common\Queue\RdKafkaQueue;
 use Tests\PicPay\TestCase;
 
-class ConnectorTest extends TestCase
+class ConnectorTestOld extends TestCase
 {
     public function testLazyConnection(): void
     {

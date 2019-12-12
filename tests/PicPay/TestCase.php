@@ -5,8 +5,7 @@ namespace Tests\PicPay;
 
 use Illuminate\Support\Facades\Queue;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use PicPay\Common\Queue\RdKafkaQueue;
-use PicPay\Common\Queue\RdKafkaServiceProvider;
+use PicPay\Common\Kafka\RdKafkaServiceProvider;
 
 class TestCase extends BaseTestCase
 {
@@ -37,8 +36,8 @@ class TestCase extends BaseTestCase
             ]
         ]);
     }
-    protected function connection(): RdKafkaQueue
-    {
-        return Queue::connection();
-    }
+//    protected function connection(): RdKafkaQueue
+//    {
+//        return Queue::connection();
+//    }
 }

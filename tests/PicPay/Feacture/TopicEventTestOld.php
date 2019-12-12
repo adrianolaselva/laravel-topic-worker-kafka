@@ -9,7 +9,7 @@ use PicPay\Common\Queue\Jobs\RdKafkaJob;
 use Tests\PicPay\Mocks\TestJob;
 use Tests\PicPay\TestCase as BaseTestCase;
 
-class TopicEventTest extends BaseTestCase
+class TopicEventTestOld extends BaseTestCase
 {
 //    /**
 //     * @throws \Exception
@@ -34,10 +34,10 @@ class TopicEventTest extends BaseTestCase
 //        parent::tearDown();
 //    }
 
-    public function testSizeDoesNotThrowExceptionOnUnknownQueue(): void
-    {
-        $this->assertNull(Queue::size(Str::random()));
-    }
+//    public function testSizeDoesNotThrowExceptionOnUnknownQueue(): void
+//    {
+//        $this->assertNull(Queue::size(Str::random()));
+//    }
 //    public function testPopNothing(): void
 //    {
 //        $this->assertNull(Queue::pop('not_exists'));
@@ -47,7 +47,6 @@ class TopicEventTest extends BaseTestCase
     {
         $topicName = Str::random();
         Queue::pushRaw($payload = Str::random(), $topicName);
-        $this->assertNull(Queue::size($topicName));
         $this->assertNotNull($job = Queue::pop($topicName));
         $this->assertNull($job->attempts());
         $this->assertInstanceOf(RdKafkaJob::class, $job);
@@ -60,7 +59,6 @@ class TopicEventTest extends BaseTestCase
     {
         $topicName = Str::random();
         Queue::push(new TestJob(), [], $topicName);
-        $this->assertNull(Queue::size($topicName));
         $this->assertNotNull($job = Queue::pop($topicName));
         $this->assertNull($job->attempts());
         $this->assertInstanceOf(RdKafkaJob::class, $job);
@@ -73,6 +71,17 @@ class TopicEventTest extends BaseTestCase
         $this->assertNull($payload['delay']);
         $this->assertNull($payload['timeout']);
         $this->assertNull($payload['timeoutAt']);
+    }
+
+    public function testPushEvents()
+    {
+        $topicName = Str::random();
+        Queue::push(new TestJob(1), [], $topicName);
+        Queue::push(new TestJob(2), [], $topicName);
+        Queue::push(new TestJob(3), [], $topicName);
+        $this->assertNotNull(Queue::pop($topicName));
+        $this->assertNotNull(Queue::pop($topicName));
+        $this->assertNotNull(Queue::pop($topicName));
     }
 
 }

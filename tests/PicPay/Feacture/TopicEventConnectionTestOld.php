@@ -6,7 +6,7 @@ namespace Tests\PicPay\Feacture;
 
 use Tests\PicPay\TestCase;
 
-class TopicEventConnectionTest extends TestCase
+class TopicEventConnectionTestOld extends TestCase
 {
     public function testConnection(): void
     {

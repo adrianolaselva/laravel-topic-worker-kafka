@@ -15,6 +15,6 @@ class TestJob implements ShouldQueue
     }
     public function handle(): void
     {
-        //
+        var_dump($this->i);
     }
 }

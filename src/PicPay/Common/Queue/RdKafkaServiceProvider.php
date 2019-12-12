@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use PicPay\Common\Queue\Connectors\RdKafkaConnector;
 
 /**
- * Class QueueServiceProvider
+ * Class RdKafkaServiceProvider
  * @package PicPay\Common\Queue
  */
 class RdKafkaServiceProvider extends ServiceProvider
@@ -29,6 +29,12 @@ class RdKafkaServiceProvider extends ServiceProvider
                 Console\ListenTopicCommand::class
             ]);
         }
+
+        $this->app->singleton(RdKafkaConnector::class, function ($app) {
+            return new RdKafkaConnector(
+                $app['events']
+            );
+        });
     }
 
     /**
@@ -40,6 +46,7 @@ class RdKafkaServiceProvider extends ServiceProvider
     {
         /** @var QueueManager $queue */
         $queue = $this->app['queue'];
+
         $queue->addConnector('rdkafka', function () {
             return new RdKafkaConnector(
                 $this->app['events']

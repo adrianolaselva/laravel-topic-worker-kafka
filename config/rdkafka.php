@@ -3,7 +3,6 @@
 return [
     'driver' => 'rdkafka',
     'topic' => env('KAFKA_DEFAULT_TOPIC', 'default'),
-    'queue' => env('KAFKA_DEFAULT_TOPIC', 'default'),
     'worker' => env('KAFKA_WORKER', 'default'),
     'parameters' => [
         'global' => [
