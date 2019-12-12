@@ -38,5 +38,15 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PicPay\\Common\\Kafka\\RdKafkaServiceProvider"
+            ],
+            "aliases": {
+                "RdKafka": "PicPay\\Common\\Kafka\\Facades\\RdKafkaFacade"
+            }
+        }
+    }
 }

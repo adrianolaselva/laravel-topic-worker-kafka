@@ -2,12 +2,8 @@
 
 namespace PicPay\Common\Kafka;
 
-use Bschmitt\Amqp\Consumer;
-use Bschmitt\Amqp\Publisher;
-use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 use PicPay\Common\Kafka\Facades\RdKafkaFacade;
-use PicPay\Common\Queue\Connectors\RdKafkaConnector;
 
 /**
  * Class RdKafkaServiceProvider
@@ -64,7 +60,7 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('RdKafka', RdKafka::class);
+        $this->app->bind('RdKafka', RdKafkaFacade::class);
 
         if (!class_exists('RdKafka')) {
             class_alias(RdKafkaFacade::class, 'RdKafka');
