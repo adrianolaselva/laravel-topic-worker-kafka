@@ -7,47 +7,42 @@ use Closure;
 
 class RdKafka
 {
-
     /**
      * @param $topic
      * @param $message
      * @param array $properties
+     * @param array $headers
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Interop\Queue\Exception
      * @throws \Interop\Queue\Exception\InvalidDestinationException
      * @throws \Interop\Queue\Exception\InvalidMessageException
      */
-    public function publish($topic, $message, array $properties = [])
+    public function publish($topic, $message, array $properties = [], array $headers = [])
     {
-
         /* @var Publisher $publisher */
         $publisher = app()->make(Publisher::class);
         $publisher
-            ->mergeProperties($properties);
+//            ->mergeProperties($properties)
+            ->connect();
 
-        if (is_string($message)) {
-            $message = new Message($message, ['content_type' => 'text/plain', 'delivery_mode' => 2]);
-        }
-
-        $publisher->publish($topic, $message);
+        $publisher->publish($topic, $message, $properties, $headers);
     }
 
     /**
-     * @param $queue
+     * @param $topic
      * @param Closure $callback
      * @param array $properties
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function consume($queue, Closure $callback, $properties = [])
+    public function consume($topic, Closure $callback, $properties = [])
     {
-
         /* @var Consumer $consumer */
         $consumer = app()->make(Consumer::class);
         $consumer
-            ->mergeProperties($properties);
+//            ->mergeProperties($properties)
+            ->connect();
 
-        $consumer->consume($queue, $callback);
-//        Request::shutdown($consumer->getChannel(), $consumer->getConnection());
+        $consumer->consume($topic, $callback);
     }
 
     /**

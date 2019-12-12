@@ -30,6 +30,7 @@ class Request extends Context
     protected $queue;
 
     /**
+     * @return $this
      * @throws \Exception
      */
     public function connect()
@@ -44,6 +45,8 @@ class Request extends Context
         $this->parameters = $this->getProperty('parameters');
 
         $this->connection = new RdKafkaConnectionFactory($this->parameters);
+
+        return $this;
     }
 
     /**

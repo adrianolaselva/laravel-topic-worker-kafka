@@ -5,21 +5,22 @@ namespace PicPay\Common\Kafka;
 
 class Publisher extends Request
 {
-
     /**
-     * @param $queue
+     * @param $topic
      * @param $message
+     * @param array $properties
+     * @param array $headers
      * @throws \Interop\Queue\Exception
      * @throws \Interop\Queue\Exception\InvalidDestinationException
      * @throws \Interop\Queue\Exception\InvalidMessageException
      */
-    public function publish($queue, $message)
+    public function publish($topic, $message, $properties = [], $headers = [])
     {
         $context = $this->getContext();
 
         $context->createProducer()
             ->send(
-                $context->createQueue($this->getQueue($queue)),
-                $context->createMessage($message));
+                $context->createQueue($this->getQueue($topic)),
+                $context->createMessage($message, $properties, $headers));
     }
 }
