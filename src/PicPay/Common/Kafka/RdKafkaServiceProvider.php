@@ -25,7 +25,7 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('RdKafka', \PicPay\Common\Kafka\Facades\RdKafka::class);
+        $this->app->bind('RdKafka', \PicPay\Common\Kafka\RdKafka::class);
 
         if (!class_exists('RdKafka')) {
             class_alias(RdKafka::class, 'RdKafka');
