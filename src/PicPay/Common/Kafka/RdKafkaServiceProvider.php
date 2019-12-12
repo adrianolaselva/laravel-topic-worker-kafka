@@ -3,7 +3,6 @@
 namespace PicPay\Common\Kafka;
 
 use Illuminate\Support\ServiceProvider;
-use PicPay\Common\Kafka\Facades\RdKafka;
 
 /**
  * Class RdKafkaServiceProvider
@@ -26,7 +25,7 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('RdKafka', RdKafka::class);
+        $this->app->bind('RdKafka', \PicPay\Common\Kafka\Facades\RdKafka::class);
 
         if (!class_exists('RdKafka')) {
             class_alias(RdKafka::class, 'RdKafka');
