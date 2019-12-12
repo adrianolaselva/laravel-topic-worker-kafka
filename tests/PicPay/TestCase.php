@@ -9,6 +9,11 @@ use PicPay\Common\Kafka\RdKafkaServiceProvider;
 
 class TestCase extends BaseTestCase
 {
+    const REPOSITORY_KEY = 'rdkafka';
+
+    protected $configRepository;
+    protected $defaultConfig;
+
     protected function getPackageProviders($app): array
     {
         return [
@@ -18,6 +23,13 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app): void
     {
+        $config = include dirname(__FILE__).'/../../config/rdkafka.php';
+        $this->defaultConfig = $config['parameters'];
+        $config = \Mockery::mock('\Illuminate\Config\Repository');
+        $config->shouldReceive('has')->with(self::REPOSITORY_KEY)->andReturn(true);
+        $config->shouldReceive('get')->with(self::REPOSITORY_KEY)->andReturn($config);
+        $this->configRepository = $config;
+
         $app['config']->set('queue.default', 'rdkafka');
         $app['config']->set('queue.connections.rdkafka', [
             'driver' => 'rdkafka',
@@ -36,8 +48,20 @@ class TestCase extends BaseTestCase
             ]
         ]);
     }
-//    protected function connection(): RdKafkaQueue
-//    {
-//        return Queue::connection();
-//    }
+
+    protected function setProtectedProperty($class, $mock, $propertyName, $value)
+    {
+        $reflectionClass = new \ReflectionClass($class);
+        $channelProperty = $reflectionClass->getProperty($propertyName);
+        $channelProperty->setAccessible(true);
+        $channelProperty->setValue($mock, $value);
+        $channelProperty->setAccessible(false);
+    }
+
+    protected function tearDown(): void
+    {
+        \Mockery::close();
+    }
+
+
 }

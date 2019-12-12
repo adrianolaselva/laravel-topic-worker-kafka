@@ -45,7 +45,7 @@
                 "PicPay\\Common\\Kafka\\RdKafkaServiceProvider"
             ],
             "aliases": {
-                "RdKafka": "PicPay\\Common\\Kafka\\Facades\\RdKafkaFacade"
+                "RdKafka": "PicPay\\Common\\Kafka\\Facades\\RdKafka"
             }
         }
     }

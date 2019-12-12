@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
  * Class RdKafka
  * @package PicPay\Common\Kafka\Facades
  */
-class RdKafkaFacade extends Facade
+class RdKafka extends Facade
 {
 
     /**

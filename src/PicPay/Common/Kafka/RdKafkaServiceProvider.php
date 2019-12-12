@@ -3,7 +3,7 @@
 namespace PicPay\Common\Kafka;
 
 use Illuminate\Support\ServiceProvider;
-use PicPay\Common\Kafka\Facades\RdKafkaFacade;
+use PicPay\Common\Kafka\Facades\RdKafka;
 
 /**
  * Class RdKafkaServiceProvider
@@ -12,46 +12,12 @@ use PicPay\Common\Kafka\Facades\RdKafkaFacade;
 class RdKafkaServiceProvider extends ServiceProvider
 {
 
-//    /**
-//     * Register the service provider.
-//     *
-//     * @return void
-//     */
-//    public function register(): void
-//    {
-//        $this->mergeConfigFrom(
-//            __DIR__.'/../../../../config/rdkafka.php',
-//            'queue.connections.rdkafka'
-//        );
-//        if ($this->app->runningInConsole()) {
-//            $this->commands([
-//                Console\ListenTopicCommand::class
-//            ]);
-//        }
-//
-//        $this->app->singleton(RdKafkaConnector::class, function ($app) {
-//            return new RdKafkaConnector(
-//                $app['events']
-//            );
-//        });
-//    }
-//
-//    /**
-//     * Register the application's event listeners.
-//     *
-//     * @return void
-//     */
-//    public function boot(): void
-//    {
-//        /** @var QueueManager $queue */
-//        $queue = $this->app['queue'];
-//
-//        $queue->addConnector('rdkafka', function () {
-//            return new RdKafkaConnector(
-//                $this->app['events']
-//            );
-//        });
-//    }
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
 
     /**
      * Bootstrap any application services.
@@ -60,10 +26,10 @@ class RdKafkaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('RdKafka', RdKafkaFacade::class);
+        $this->app->bind('RdKafka', RdKafka::class);
 
         if (!class_exists('RdKafka')) {
-            class_alias(RdKafkaFacade::class, 'RdKafka');
+            class_alias(RdKafka::class, 'RdKafka');
         }
 
         $this->publishes([

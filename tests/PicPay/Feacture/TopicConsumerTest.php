@@ -6,20 +6,19 @@ use Tests\PicPay\TestCase;
 
 class TopicConsumerTest extends TestCase
 {
-    public function testConnection(): void
+
+    protected function setUp(): void
     {
-        $message = $this->connection()->pop('default');
+        parent::setUp();
 
-        $event = json_decode($message->getRawBody(), true);
-        $data = json_decode($event['data'], true);
+        // partial mock of \Bschmitt\Amqp\Publisher
+        // we want all methods except [connect] to be real
+        $this->publisherMock = \Mockery::mock('\PicPay\Common\Kafka\Publisher[connect]', [$this->configRepository]);
 
-        $this->assertNotEmpty($message->getRawBody());
-        $this->assertEquals('job:test', $event['displayName']);
-        $this->assertEquals('job:test', $event['job']);
-        $this->assertNull($event['maxTries']);
-        $this->assertNull($event['delay']);
-        $this->assertNull($event['timeout']);
-        $this->assertNotNull($event['data']);
-        $this->assertEquals('teste', $data['message']);
+//        $this->connectionMock = Mockery::mock('\PhpAmqpLib\Connection\AMQPSSLConnection');
+//        // channel and connection are both protected and without changing the source this was the only way to mock them
+//        $this->setProtectedProperty('\Bschmitt\Amqp\Publisher', $this->publisherMock, 'channel', $this->channelMock);
+//        $this->setProtectedProperty('\Bschmitt\Amqp\Publisher', $this->publisherMock, 'connection', $this->connectionMock);
+
     }
 }

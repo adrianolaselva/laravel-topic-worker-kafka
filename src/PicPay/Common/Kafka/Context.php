@@ -67,22 +67,6 @@ abstract class Context
     }
 
     /**
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
-    public function getConnectOption($key, $default = null)
-    {
-        $options = $this->getProperty('connect_options');
-
-        if (!is_array($options)) {
-            return $default;
-        }
-
-        return array_key_exists($key, $options) ? $options[$key] : $default;
-    }
-
-    /**
      * @param string $topicName
      * @return RdKafkaConsumer
      */

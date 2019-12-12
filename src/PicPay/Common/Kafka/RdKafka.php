@@ -23,7 +23,7 @@ class RdKafka
         }
 
         $publisher->publish($routing, $message);
-        Request::shutdown($publisher->getChannel(), $publisher->getConnection());
+//        Request::shutdown($publisher->getChannel(), $publisher->getConnection());
     }
 
     public function consume($queue, Closure $callback, $properties = [])
